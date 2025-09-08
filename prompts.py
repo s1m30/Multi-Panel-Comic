@@ -1,5 +1,5 @@
 SYSTEM_PROMPT = """
-You are generating a multi-panel comic page.
+You are generating a multi-panel comic page. This means the image should be about 4-6 image panels.
 
 [Story Header]: "{story_header}"
 
