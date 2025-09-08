@@ -97,8 +97,25 @@ def main():
         if st.session_state.comic_pages:
             # Show all pages
             st.subheader("📖 Your Generated Comic Pages")
-            for idx, img in enumerate(st.session_state.comic_pages):
-                st.image(img, caption=f"Comic Page {idx+1}", width=405)
+            for i in range(0, len(st.session_state.comic_pages), 2):
+                cols = st.columns(2)  # create 2 columns
+
+                # first image
+                with cols[0]:
+                    st.image(
+                        st.session_state.comic_pages[i],
+                        caption=f"Comic Page {i+1}",
+                        width=405
+                    )
+
+                # second image (if it exists)
+                if i + 1 < len(st.session_state.comic_pages):
+                    with cols[1]:
+                        st.image(
+                            st.session_state.comic_pages[i+1],
+                            caption=f"Comic Page {i+2}",
+                            width=405
+                        )
                 
             edit_instruction = st.text_input("✏️ Edit last page (optional)")
             if st.button("Apply Edit"):
