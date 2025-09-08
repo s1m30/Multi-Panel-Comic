@@ -23,12 +23,7 @@ def main():
         st.session_state.chat = None  # will hold ongoing chat for edits
 
     # Sidebar for API key + file upload
-    os.environ["GOOGLE_API_KEY"] = st.sidebar.text_input("Enter your Google API key:", type="password")
-    st.sidebar.header("Upload Assets")
-    uploaded_file = st.sidebar.file_uploader(
-        "Upload reference image (optional)", type=["png", "jpg", "jpeg"]
-    )
-
+    os.environ["GOOGLE_API_KEY"] = st.sidebar.text_input("Enter your Google API key:", type="password")    
     # Tabs for input
     tabs = st.tabs(["Story Header", "Panel Description", "Characters", "Story Customization"])
 
@@ -129,17 +124,12 @@ def main():
                         st.rerun()
 
             # Download + next page options
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("⬇️ Download PDF"):
-                    pdf_buffer = save_pdf(st.session_state.comic_pages)
-                    st.download_button(
-                        "Download Comic PDF", pdf_buffer, file_name="comic.pdf", mime="application/pdf"
-                    )
+            if st.button("⬇️ Download PDF"):
+                pdf_buffer = save_pdf(st.session_state.comic_pages)
+                st.download_button(
+                    "Download Comic PDF", pdf_buffer, file_name="comic.pdf", mime="application/pdf"
+                )
 
-            with col2:
-                if st.button("➕ Generate Next Page"):
-                    st.success("You can now describe and generate the next page!")
 
 
 if __name__ == "__main__":
