@@ -61,6 +61,7 @@ def main():
         theme = st.selectbox("Choose a theme", ["Adventure", "Sci-Fi", "Fantasy", "Slice of Life"])
         background = st.text_input("Background setting")
         style = st.selectbox("Comic drawing style", ["Manga", "Western", "Cartoon", "Minimalist"])
+        ensure_consistency = st.checkbox("Ensure character consistency across pages")
         plot = st.text_area("Story Plot (optional)", max_chars=500, help="Give more context about the overall story. Up to 500 characters.")
         
         
@@ -79,10 +80,14 @@ def main():
             panel = Panel(description=panel_description)
 
             # Aggregate prompt
-            prompt = generate_prompt(story, characters, panel)
+            prompt = generate_prompt(story, characters, panel, ensure_consistency)
 
-            # Generate a new page (reset chat with new_session=True)
-            images, st.session_state.chat = generate_image(prompt, new_session=True)
+             # If consistency is ON and we already have pages, use last image as reference
+            if ensure_consistency and st.session_state.comic_pages:
+                last_image = st.session_state.comic_pages[-1]
+                images, st.session_state.chat = generate_image(prompt, new_session=True, image=last_image)
+            else:
+                images, st.session_state.chat = generate_image(prompt, new_session=True)
 
             if images:
                 st.session_state.comic_pages.append(images[0])
@@ -104,6 +109,7 @@ def main():
                     if images:
                         st.session_state.comic_pages[-1] = images[0]  # replace last page
                         st.success("✅ Last page updated with your edit!")
+                        st.rerun()
 
             # Download + next page options
             col1, col2 = st.columns(2)

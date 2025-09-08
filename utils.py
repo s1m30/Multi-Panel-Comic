@@ -71,7 +71,10 @@ def save_pdf(images):
 
 
 
-def generate_prompt(story_context: StoryContext, characters: List[Character], panel: Panel) -> str:
+def generate_prompt(story_context: StoryContext, 
+                    characters: List[Character], 
+                    panel: Panel, 
+                    consistency: bool=False) -> str:
     """Aggregates inputs into a formatted prompt string."""
 
     # Build characters string
@@ -102,6 +105,8 @@ def generate_prompt(story_context: StoryContext, characters: List[Character], pa
         panel_description=panel.description
     )
 
+    if consistency:
+        prompt += "\n\n Important: Ensure characters remain visually consistent with the reference image."
     return prompt
 
 
@@ -129,6 +134,9 @@ def generate_image(prompt: str, chat=None, image: Image.Image = None, new_sessio
     # Build contents for message
     contents = [prompt]
     if image:
+        # Ensure reference image is in the right mode
+        if not isinstance(image, Image.Image):
+            image = Image.open(BytesIO(image))
         contents.append(image)
 
     # Send to Gemini API
